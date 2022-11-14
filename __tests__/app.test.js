@@ -10,3 +10,21 @@ beforeEach(() => {
 afterAll(() => {
   connection.end();
 });
+
+describe("GET /api/categories", () => {
+  test("GET: 200 - responds with a 200 status and an array of objects containing slug and description properties", () => {
+    return request(app)
+      .get("api/categories")
+      .expect(200)
+      .then(({ body }) => {
+        const { categories } = body;
+        expect(categories).toBeInstanceOf(Array);
+        categories.forEach((category) => {
+          expect(category).toEqual({
+            slug: expect.any(String),
+            description: expect.any(String),
+          });
+        });
+      });
+  });
+});
