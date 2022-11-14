@@ -14,10 +14,11 @@ afterAll(() => {
 describe("GET /api/categories", () => {
   test("GET: 200 - responds with a 200 status and an array of objects containing slug and description properties", () => {
     return request(app)
-      .get("api/categories")
+      .get("/api/categories")
       .expect(200)
       .then(({ body }) => {
         const { categories } = body;
+        expect(categories).toHaveLength(4);
         expect(categories).toBeInstanceOf(Array);
         categories.forEach((category) => {
           expect(category).toEqual({
@@ -25,6 +26,14 @@ describe("GET /api/categories", () => {
             description: expect.any(String),
           });
         });
+      });
+  });
+  test("Get: 404 - error when .get /api/nonsense", () => {
+    return request(app)
+      .get("/api/nonsense")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("route does not exist");
       });
   });
 });
