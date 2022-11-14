@@ -8,7 +8,7 @@ beforeEach(() => {
   return seed(testData);
 });
 afterAll(() => {
-  connection.end();
+  return connection.end();
 });
 
 describe("GET /api/categories", () => {
@@ -19,7 +19,6 @@ describe("GET /api/categories", () => {
       .then(({ body }) => {
         const { categories } = body;
         expect(categories).toHaveLength(4);
-        expect(categories).toBeInstanceOf(Array);
         categories.forEach((category) => {
           expect(category).toEqual({
             slug: expect.any(String),
