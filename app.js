@@ -3,6 +3,7 @@ const app = express();
 const {
   getCategories,
   getReviews,
+  getReviewById,
   getComments,
 } = require("./controller/games.controller.js");
 
@@ -12,7 +13,7 @@ app.get("/api/reviews", getReviews);
 
 app.get("/api/reviews/:review_id/comments", getComments);
 
-app.use("*", (req, res, next) => {
+app.all("*", (req, res, next) => {
   res.status(404).send({ message: "route does not exist" });
 });
 
