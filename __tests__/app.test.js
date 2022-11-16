@@ -66,31 +66,7 @@ describe.only("GET /api/reviews", () => {
       .expect(200)
       .then(({ body }) => {
         const { reviews } = body;
-        expect(reviews).toHaveLength(13);
-        expect(reviews[0]).toEqual({
-          owner: "mallionaire",
-          title: "Mollit elit qui incididunt veniam occaecat cupidatat",
-          review_id: 7,
-          category: "social deduction",
-          review_img_url:
-            "https://images.pexels.com/photos/278888/pexels-photo-278888.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-          created_at: "2021-01-25T11:16:54.963Z",
-          votes: 9,
-          designer: "Avery Wunzboogerz",
-          comment_count: 0,
-        });
-        expect(reviews[12]).toEqual({
-          owner: "mallionaire",
-          title: "Settlers of Catan: Don't Settle For Less",
-          review_id: 13,
-          category: "social deduction",
-          review_img_url:
-            "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg",
-          created_at: "1970-01-10T02:08:38.400Z",
-          votes: 16,
-          designer: "Klaus Teuber",
-          comment_count: 0,
-        });
+        expect(reviews).toBeSortedBy("created_at", { descending: true });
       });
   });
 });
