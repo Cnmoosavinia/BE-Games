@@ -1,5 +1,4 @@
 const db = require("../db/connection.js");
-const reviews = require("../db/data/test-data/reviews.js");
 
 exports.selectCategories = () => {
   return db
@@ -30,19 +29,17 @@ exports.selectReviews = () => {
     });
 };
 
-exports.selectComments = (review_id) => {
-  return db
-    .query(`SELECT * FROM comments WHERE review_id = $1 ORDER BY created_at`, [
-      review_id,
-    ])
-    .then(({ rows }) => {
-      const comment = rows[0];
-      if (!comment) {
-        return Promise.reject({
-          status: 404,
-          message: `No comments found for review_id: ${review_id}`,
-        });
-      }
-      return rows;
+exports.selectComments = async (review_id) => {
+  const comments = await db.query(
+    `SELECT * FROM comments WHERE review_id = $1 ORDER BY created_at`,
+    [review_id]
+  );
+  if (comments.rows.length === 0) {
+    return Promise.reject({
+      status: 404,
+      message: `No comments found for review_id: ${review_id}`,
     });
+  } else {
+    return comments.rows;
+  }
 };

@@ -71,7 +71,7 @@ describe("GET /api/reviews", () => {
   });
 });
 
-describe.only("GET /api/reviews/:review_id/comments", () => {
+describe("GET /api/reviews/:review_id/comments", () => {
   test("GET: 200 - responds with a 200 status and an array of comments which match the input review_id", () => {
     return request(app)
       .get("/api/reviews/2/comments")
@@ -107,14 +107,6 @@ describe.only("GET /api/reviews/:review_id/comments", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.message).toBe("No comments found for review_id: 1000");
-      });
-  });
-  test("GET: 404 return message no comments when a review_id input has no comments against it", () => {
-    return request(app)
-      .get("/api/reviews/1/comments")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.message).toBe("No comments found for review_id: 1");
       });
   });
   test("GET: 400 return message bad request when a non appliable input is added to :review_id", () => {
