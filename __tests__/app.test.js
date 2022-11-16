@@ -70,3 +70,41 @@ describe.only("GET /api/reviews", () => {
       });
   });
 });
+
+describe("GET /api/reviews/review_id", () => {
+  test("GET: 200 - returns object with the relevant ID", () => {
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject({
+          review_id: 1,
+          title: expect.any(String),
+          designer: expect.any(String),
+          owner: expect.any(String),
+          review_img_url: expect.any(String),
+          review_body: expect.any(String),
+          category: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+        });
+      });
+  });
+  test("GET: 400 - return message bad request when a non appliable input is added to :review_id", () => {
+    return request(app)
+      .get("/api/reviews/nonsense")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
+      });
+  });
+  test("GET: 404 - return message review not found when a review_id input is not found", () => {
+    return request(app)
+      .get("/api/reviews/1000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("No review found for review_id: 1000");
+      });
+  });
+});
