@@ -27,12 +27,46 @@ describe("GET /api/categories", () => {
         });
       });
   });
-  test("Get: 404 - error when .get /api/nonsense", () => {
+  test("GET: 404 - error when .get /api/nonsense", () => {
     return request(app)
       .get("/api/nonsense")
       .expect(404)
       .then(({ body }) => {
         expect(body.message).toBe("route does not exist");
+      });
+  });
+});
+
+describe.only("GET /api/reviews", () => {
+  test("GET: 200 - responds with a 200 status and an array of objects containing correct properties", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toHaveLength(13);
+        reviews.forEach((review) => {
+          expect(review).toEqual({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("GET: 200 - responds with a 200 status and an array of objects containing correct properties", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toBeSortedBy("created_at", { descending: true });
       });
   });
 });

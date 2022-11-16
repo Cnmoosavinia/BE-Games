@@ -1,8 +1,13 @@
 const express = require("express");
 const app = express();
-const { getCategories } = require("./controller/games.controller.js");
+const {
+  getCategories,
+  getReviews,
+} = require("./controller/games.controller.js");
 
 app.get("/api/categories", getCategories);
+
+app.get("/api/reviews", getReviews);
 
 app.use("*", (req, res, next) => {
   res.status(404).send({ message: "route does not exist" });
