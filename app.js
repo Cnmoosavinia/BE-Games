@@ -2,10 +2,13 @@ const express = require("express");
 const app = express();
 const {
   getCategories,
-  getReviewById,
+  getReviews,
+  getReviewById
 } = require("./controller/games.controller.js");
 
 app.get("/api/categories", getCategories);
+
+app.get("/api/reviews", getReviews);
 
 app.get("/api/reviews/:review_id", getReviewById);
 
