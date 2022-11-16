@@ -37,7 +37,7 @@ describe("GET /api/categories", () => {
   });
 });
 
-describe.only("GET /api/reviews", () => {
+describe("GET /api/reviews", () => {
   test("GET: 200 - responds with a 200 status and an array of objects containing correct properties", () => {
     return request(app)
       .get("/api/reviews")
@@ -67,6 +67,62 @@ describe.only("GET /api/reviews", () => {
       .then(({ body }) => {
         const { reviews } = body;
         expect(reviews).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+});
+
+describe.only("GET /api/reviews/:review_id/comments", () => {
+  test("GET: 200 - responds with a 200 status and an array of comments which match the input review_id", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        console.log(comments);
+        expect(comments).toHaveLength(3);
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            review_id: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("GET: 200 - responds with a 200 status with array ordered by created_at from most recent comment", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toBeSortedBy("created_at", { ascending: true });
+      });
+  });
+  test("GET: 404 return message not found when a review_id input is not found", () => {
+    return request(app)
+      .get("/api/reviews/1000/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("No comments found for review_id: 1000");
+      });
+  });
+  test("GET: 404 return message no comments when a review_id input has no comments against it", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("No comments found for review_id: 1");
+      });
+  });
+  test("GET: 400 return message bad request when a non appliable input is added to :review_id", () => {
+    return request(app)
+      .get("/api/reviews/nonsense/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
       });
   });
 });

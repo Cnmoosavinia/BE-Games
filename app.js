@@ -3,14 +3,23 @@ const app = express();
 const {
   getCategories,
   getReviews,
+  getComments,
 } = require("./controller/games.controller.js");
 
 app.get("/api/categories", getCategories);
 
 app.get("/api/reviews", getReviews);
 
+app.get("/api/reviews/:review_id/comments", getComments);
+
 app.use("*", (req, res, next) => {
   res.status(404).send({ message: "route does not exist" });
+});
+
+app.use((err, req, res, next) => {
+  if (err.status) {
+    res.status(err.status).send({ message: err.message });
+  } else next(err);
 });
 
 app.use((err, req, res, next) => {
