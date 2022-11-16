@@ -25,7 +25,6 @@ exports.selectReviews = () => {
     `
     )
     .then((reviews) => {
-      console.log(reviews.rows);
       return reviews.rows;
     });
 };
