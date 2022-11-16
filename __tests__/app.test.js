@@ -79,15 +79,6 @@ describe.only("GET /api/reviews", () => {
           designer: "Avery Wunzboogerz",
           comment_count: 0,
         });
-      });
-  });
-  test("GET: 200 - responds with a 200 status and an array of objects in descending order by date", () => {
-    return request(app)
-      .get("/api/reviews")
-      .expect(200)
-      .then(({ body }) => {
-        const { reviews } = body;
-        expect(reviews).toHaveLength(13);
         expect(reviews[12]).toEqual({
           owner: "mallionaire",
           title: "Settlers of Catan: Don't Settle For Less",
