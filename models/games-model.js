@@ -90,7 +90,6 @@ exports.updateVotes = ({ inc_votes: newVote }, { review_id }) => {
         )
         .then(({ rows }) => {
           const updatedReview = rows[0];
-          console.log(updatedReview);
           return updatedReview;
         });
     });
