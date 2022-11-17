@@ -184,6 +184,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
     const newComment = {
       username: "dav3rid",
       body: "first comment woop",
+      extra: "something bad tdd wise",
     };
     return request(app)
       .post("/api/reviews/1/comments")
@@ -191,7 +192,6 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .expect(201)
       .then(({ body }) => {
         const { comment } = body;
-        console.log(comment);
         expect(comment).toMatchObject({
           comment_id: expect.any(Number),
           body: "first comment woop",
@@ -212,7 +212,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .send(newComment)
       .expect(404)
       .then(({ body }) => {
-        expect(body.message).toBe("This user does not exist");
+        expect(body.message).toBe("Not Found");
       });
   });
   test("POST: 400 - responds with a 400 status and a Bad Request comment when req.body is empty", () => {
@@ -235,4 +235,78 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.message).toBe("Bad Request");
       });
   });
+  test("POST: 400 - responds with a 400 status and a Bad Request comment when req.body is incomplete", () => {
+    const newComment = { body: "first comment woop" };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
+      });
+  });
+  test("POST: 400 - responds with a 400 status and a Bad Request comment when req.body is incomplete", () => {
+    const newComment = {
+      usename: "dav3rid",
+      body: "first comment woop",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
+      });
+  });
+  test("POST: 400 - responds with a 400 status and a Bad Request comment when req.body is incomplete", () => {
+    const newComment = {
+      username: "dav3rid",
+      boody: "first comment woop",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
+      });
+  });
+  test("POST: 404 - review_id doesn't exist", () => {
+    const newComment = {
+      username: "dav3rid",
+      body: "first comment woop",
+    };
+    return request(app)
+      .post("/api/reviews/1000/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("Not Found");
+      });
+  });
+  test("POST: 400 - Bad Request if review_id is not a number", () => {
+    const newComment = {
+      username: "dav3rid",
+      body: "first comment woop",
+    };
+    return request(app)
+      .post("/api/reviews/nonsense/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
+      });
+  });
+
+  //no body, invalid username, no content
+  //check the review_id is not valid
+  // " valid but not existant
 });
+
+// test("GET: 400 return message bad request when a non appliable input is added to :review_id", () => {
+//   return request(app)
+//     .get("/api/reviews/nonsense/comments")
+//     .expect(400)
+//     .then(({ body }) => {
+//       expect(body.message).toBe("Bad Request");
+//     });
