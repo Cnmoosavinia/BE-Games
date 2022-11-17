@@ -297,16 +297,4 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.message).toBe("Bad Request");
       });
   });
-
-  //no body, invalid username, no content
-  //check the review_id is not valid
-  // " valid but not existant
 });
-
-// test("GET: 400 return message bad request when a non appliable input is added to :review_id", () => {
-//   return request(app)
-//     .get("/api/reviews/nonsense/comments")
-//     .expect(400)
-//     .then(({ body }) => {
-//       expect(body.message).toBe("Bad Request");
-//     });
