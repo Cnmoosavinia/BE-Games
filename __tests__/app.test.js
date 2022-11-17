@@ -164,3 +164,40 @@ describe("GET /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/reviews/:review_id/comments", () => {
+  test("POST: 201 - responds with a 201 status with a newly added comment to the db", () => {
+    const newComment = {
+      username: "dav3rid",
+      body: "first comment woop",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment.body).toBe("first comment woop");
+      });
+  });
+  test("POST: 400 - responds with a 400 status and a Bad Request comment when req.body is empty", () => {
+    const newComment = {};
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
+      });
+  });
+  test("POST: 400 - responds with a 400 status and a Bad Request comment when req.body is incomplete", () => {
+    const newComment = { username: "dav3rid" };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
+      });
+  });
+});
