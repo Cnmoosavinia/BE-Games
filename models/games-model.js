@@ -68,3 +68,20 @@ exports.selectComments = (review_id) => {
         });
     });
 };
+
+exports.insertComment = ({ username, body }, { review_id }) => {
+  return db
+    .query(
+      `INSERT INTO comments
+    (
+      body, author, review_id
+    ) VALUES (
+      $1, $2, $3
+    ) RETURNING *;
+    `,
+      [body, username, review_id]
+    )
+    .then((newComment) => {
+      return newComment.rows[0];
+    });
+};
