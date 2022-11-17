@@ -4,6 +4,7 @@ const {
   selectReviews,
   selectComments,
   selectReviewById,
+  insertComment,
   updateVotes,
 } = require("../models/games-model.js");
 
@@ -33,6 +34,14 @@ exports.getComments = (req, res, next) => {
   selectComments(review_id)
     .then((comments) => {
       res.status(200).send({ comments });
+    })
+    .catch(next);
+};
+
+exports.postComment = (req, res, next) => {
+  insertComment(req.body, req.params)
+    .then((comment) => {
+      res.status(201).send({ comment });
     })
     .catch(next);
 };
