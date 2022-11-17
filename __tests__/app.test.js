@@ -164,3 +164,19 @@ describe("GET /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe.only("PATCH /api/reviews/review_id", () => {
+  test("PATCH: 200 - responds with the updated vote in reivew object", () => {
+    const votesUpdate = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(votesUpdate)
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject({
+          votes: 6,
+        });
+      });
+  });
+});

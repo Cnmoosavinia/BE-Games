@@ -68,3 +68,27 @@ exports.selectComments = (review_id) => {
         });
     });
 };
+
+exports.updateVotes = ({ inc_votes: newVote }, { review_id }) => {
+  // return db
+  //   .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
+  //   .then(({ rows }) => {
+  //     const reviewToAmend = rows[0];
+  //     reviewToAmend.votes = reviewToAmend.votes + newVote;
+  //     console.log(reviewToAmend);
+  //   });
+  return db
+    .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
+    .then(() => {
+      return db
+        .query(
+          `UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;`,
+          [newVote, review_id]
+        )
+        .then(({ rows }) => {
+          const updatedReview = rows[0];
+          console.log(updatedReview);
+          return updatedReview;
+        });
+    });
+};
