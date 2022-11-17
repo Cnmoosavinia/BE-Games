@@ -29,20 +29,6 @@ exports.selectReviews = () => {
     });
 };
 
-exports.selectComments = async (review_id) => {
-  const comments = await db.query(
-    `SELECT * FROM comments WHERE review_id = $1 ORDER BY created_at`,
-    [review_id]
-  );
-  if (comments.rows.length === 0) {
-    return Promise.reject({
-      status: 404,
-      message: `No comments found for review_id: ${review_id}`,
-    });
-  } else {
-    return comments.rows;
-  }
-};
 exports.selectReviewById = (review_id) => {
   return db
     .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
@@ -55,5 +41,30 @@ exports.selectReviewById = (review_id) => {
         });
       }
       return review;
+    });
+};
+
+exports.selectComments = (review_id) => {
+  return db
+    .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
+    .then(({ rows }) => {
+      const review = rows[0];
+      if (!review) {
+        return Promise.reject({
+          status: 404,
+          message: `No comments found for review_id: ${review_id}`,
+        });
+      }
+      return review;
+    })
+    .then(() => {
+      return db
+        .query(
+          `SELECT * FROM comments WHERE review_id = $1 ORDER BY created_at`,
+          [review_id]
+        )
+        .then((comments) => {
+          return comments.rows;
+        });
     });
 };
