@@ -180,7 +180,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(comment.body).toBe("first comment woop");
       });
   });
-  test.only("POST: comment object is unaffected by input if information is valid", () => {
+  test("POST: comment object is unaffected by input if information is valid", () => {
     const newComment = {
       username: "dav3rid",
       body: "first comment woop",
@@ -202,7 +202,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         });
       });
   });
-  test.only("POST: 404 - responds with a 404 staus if the user doesn't exist in the database", () => {
+  test("POST: 404 - responds with a 404 staus if the user doesn't exist in the database", () => {
     const newComment = {
       username: "garyyy",
       body: "first comment woop",
