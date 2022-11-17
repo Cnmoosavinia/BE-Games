@@ -70,15 +70,18 @@ exports.selectComments = (review_id) => {
 };
 
 exports.updateVotes = ({ inc_votes: newVote }, { review_id }) => {
-  // return db
-  //   .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
-  //   .then(({ rows }) => {
-  //     const reviewToAmend = rows[0];
-  //     reviewToAmend.votes = reviewToAmend.votes + newVote;
-  //     console.log(reviewToAmend);
-  //   });
   return db
     .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
+    .then(({ rows }) => {
+      const review = rows[0];
+      if (!review) {
+        return Promise.reject({
+          status: 404,
+          message: `No review found for review_id: ${review_id}`,
+        });
+      }
+      return review;
+    })
     .then(() => {
       return db
         .query(

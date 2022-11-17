@@ -37,6 +37,17 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+  if (err.code === "23502") {
+    res.status(400).send({ message: "Bad Request" });
+  } else next(err);
+});
+app.use((err, req, res, next) => {
+  if (err.code === "23503") {
+    res.status(404).send({ message: "Not Found" });
+  } else next(err);
+});
+
+app.use((err, req, res, next) => {
   console.log(err, "unhandled error");
   res.status(500).send({ message: "internal server error" });
 });

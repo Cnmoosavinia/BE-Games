@@ -165,8 +165,8 @@ describe("GET /api/reviews/:review_id/comments", () => {
   });
 });
 
-describe.only("PATCH /api/reviews/review_id", () => {
-  test("PATCH: 200 - responds with the updated vote in reivew object", () => {
+describe("PATCH /api/reviews/review_id", () => {
+  test("PATCH: 200 - responds with the updated vote in reivew object when a postive is input", () => {
     const votesUpdate = { inc_votes: 1 };
     return request(app)
       .patch("/api/reviews/2")
@@ -177,6 +177,69 @@ describe.only("PATCH /api/reviews/review_id", () => {
         expect(review).toMatchObject({
           votes: 6,
         });
+      });
+  });
+  test("PATCH: 200 - responds with the updated vote in reivew object when a negative is input", () => {
+    const votesUpdate = { inc_votes: -3 };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(votesUpdate)
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject({
+          votes: 2,
+        });
+      });
+  });
+  test("GET: 400 - return message bad request when input is empty", () => {
+    const votesUpdate = {};
+    return request(app)
+      .patch("/api/reviews/nonsense")
+      .send(votesUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
+      });
+  });
+  test("GET: 400 - return message bad request when a non appliable input is added to :review_id", () => {
+    const votesUpdate = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/reviews/nonsense")
+      .send(votesUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
+      });
+  });
+  test("GET: 404 - return message review not found when a review_id input is not found", () => {
+    const votesUpdate = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/reviews/1000")
+      .send(votesUpdate)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("No review found for review_id: 1000");
+      });
+  });
+  test("GET: 400 - return message Bad Request when inc_votes is not a number", () => {
+    const votesUpdate = { inc_votes: "hello" };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(votesUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
+      });
+  });
+  test("GET: 400 - return message Bad Request when inc_votes is spelt wrong", () => {
+    const votesUpdate = { inc_voes: 1 };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(votesUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
       });
   });
 });
