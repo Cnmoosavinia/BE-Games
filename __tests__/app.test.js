@@ -180,6 +180,41 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(comment.body).toBe("first comment woop");
       });
   });
+  test.only("POST: comment object is unaffected by input if information is valid", () => {
+    const newComment = {
+      username: "dav3rid",
+      body: "first comment woop",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        console.log(comment);
+        expect(comment).toMatchObject({
+          comment_id: expect.any(Number),
+          body: "first comment woop",
+          review_id: 1,
+          author: "dav3rid",
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test.only("POST: 404 - responds with a 404 staus if the user doesn't exist in the database", () => {
+    const newComment = {
+      username: "garyyy",
+      body: "first comment woop",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("This user does not exist");
+      });
+  });
   test("POST: 400 - responds with a 400 status and a Bad Request comment when req.body is empty", () => {
     const newComment = {};
     return request(app)
