@@ -109,7 +109,16 @@ describe("GET /api/reviews/review_id", () => {
   });
 });
 
-describe.only("GET /api/reviews/:review_id/comments", () => {
+describe("GET /api/reviews/:review_id/comments", () => {
+  test("GET: 200 - responds with a 200 status with an empty array if there is a valid review but no comments", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toEqual([]);
+      });
+  });
   test("GET: 200 - responds with a 200 status and an array of comments which match the input review_id", () => {
     return request(app)
       .get("/api/reviews/2/comments")
