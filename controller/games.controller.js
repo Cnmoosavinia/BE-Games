@@ -2,9 +2,9 @@ const { application } = require("express");
 const {
   selectCategories,
   selectReviews,
+  selectComments,
   selectReviewById,
 } = require("../models/games-model.js");
-
 
 exports.getCategories = (req, res, next) => {
   selectCategories().then((categories) => {
@@ -23,6 +23,15 @@ exports.getReviewById = (req, res, next) => {
   selectReviewById(review_id)
     .then((review) => {
       res.status(200).send({ review });
+    })
+    .catch(next);
+};
+
+exports.getComments = (req, res, next) => {
+  const { review_id } = req.params;
+  selectComments(review_id)
+    .then((comments) => {
+      res.status(200).send({ comments });
     })
     .catch(next);
 };
