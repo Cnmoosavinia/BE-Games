@@ -463,3 +463,70 @@ describe("GET /api/reviews/:review_id/comment count", () => {
       });
   });
 });
+
+describe("GET /api/reviews?queries", () => {
+  describe("category queries", () => {
+    test("GET: 200 - query returns reviews by the input category", () => {
+      return request(app)
+        .get("/api/reviews?category=dexterity")
+        .expect(200)
+        .then(({ body }) => {
+          const { reviews } = body;
+          expect(reviews).toHaveLength(1);
+          reviews.forEach((review) => {
+            expect(review).toEqual({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: "dexterity",
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+          });
+        });
+    });
+  });
+  describe("sort queries", () => {
+    test("GET: 200 - query returns reviews by the input category", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=title")
+        .expect(200)
+        .then(({ body }) => {
+          const { reviews } = body;
+          expect(reviews).toHaveLength(13);
+          expect(reviews).toBeSortedBy("title", { descending: true });
+        });
+    });
+    test("GET: 400 - query responds with a 400 error when sort_by isn't valid", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=nonsense")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("Invalid sort query");
+        });
+    });
+  });
+  describe("order queries", () => {
+    test("query returns reviews in ascending order", () => {
+      return request(app)
+        .get("/api/reviews?order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          const { reviews } = body;
+          expect(reviews).toHaveLength(13);
+          expect(reviews).toBeSortedBy("created_at", { ascending: true });
+        });
+    });
+    test("GET: 400 - query responds with a 400 error when order is empty string", () => {
+      return request(app)
+        .get("/api/reviews?order=")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("Invalid order query");
+        });
+    });
+  });
+});

@@ -12,21 +12,38 @@ exports.selectCategories = () => {
     });
 };
 
-exports.selectReviews = () => {
-  return db
-    .query(
-      `
-    SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, reviews.designer, COUNT(comments.review_id)::int AS comment_count 
-    FROM reviews
-    LEFT JOIN users ON reviews.owner = users.username
-    LEFT JOIN comments ON reviews.review_id = comments.review_id
-    GROUP BY reviews.review_id, users.username
-    ORDER BY reviews.created_at DESC;
-    `
-    )
-    .then((reviews) => {
-      return reviews.rows;
-    });
+exports.selectReviews = (category, sort_by = "created_at", order = "desc") => {
+  const queryValue = [];
+  let queryTable = `SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, reviews.designer, COUNT(comments.review_id)::int AS comment_count  FROM reviews LEFT JOIN users ON reviews.owner = users.username LEFT JOIN comments ON reviews.review_id = comments.review_id`;
+
+  if (
+    ![
+      "owner",
+      "title",
+      "reivew_id",
+      "category",
+      "votes",
+      "comment_count",
+      "created_at",
+    ].includes(sort_by)
+  ) {
+    return Promise.reject({ status: 400, message: "Invalid sort query" });
+  }
+
+  if (!["ASC", "DESC", "asc", "desc"].includes(order)) {
+    return Promise.reject({ status: 400, message: "Invalid order query" });
+  }
+
+  if (category) {
+    queryValue.push(category);
+    queryTable += ` WHERE reviews.category = $1 GROUP BY reviews.review_id, users.username ORDER BY ${sort_by} ${order};`;
+  } else {
+    queryTable += ` GROUP BY reviews.review_id, users.username ORDER BY ${sort_by} ${order};`;
+  }
+
+  return db.query(queryTable, queryValue).then((reviews) => {
+    return reviews.rows;
+  });
 };
 
 exports.selectReviewById = (review_id) => {
@@ -128,3 +145,18 @@ exports.selectUsers = () => {
     return users.rows;
   });
 };
+
+// return db
+// .query(
+//   `
+// SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, reviews.designer, COUNT(comments.review_id)::int AS comment_count
+// FROM reviews
+// LEFT JOIN users ON reviews.owner = users.username
+// LEFT JOIN comments ON reviews.review_id = comments.review_id
+// GROUP BY reviews.review_id, users.username
+// ORDER BY reviews.created_at DESC;
+// `
+// )
+// .then((reviews) => {
+//   return reviews.rows;
+// });
