@@ -31,7 +31,18 @@ exports.selectReviews = () => {
 
 exports.selectReviewById = (review_id) => {
   return db
-    .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
+    .query(
+      `
+    SELECT reviews.owner, reviews.title, reviews.review_body, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, reviews.designer, COUNT(comments.review_id)::int AS comment_count 
+    FROM reviews
+    LEFT JOIN users ON reviews.owner = users.username
+    LEFT JOIN comments ON reviews.review_id = comments.review_id
+    WHERE reviews.review_id = $1
+    GROUP BY reviews.review_id, users.username
+    ORDER BY reviews.created_at DESC; 
+    `,
+      [review_id]
+    )
     .then(({ rows }) => {
       const review = rows[0];
       if (!review) {

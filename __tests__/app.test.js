@@ -225,7 +225,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.message).toBe("Bad Request");
       });
   });
-    test("POST: 400 - responds with a 400 status and a Bad Request comment when req.body is incomplete", () => {
+  test("POST: 400 - responds with a 400 status and a Bad Request comment when req.body is incomplete", () => {
     const newComment = { username: "dav3rid" };
     return request(app)
       .post("/api/reviews/1/comments")
@@ -235,7 +235,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.message).toBe("Bad Request");
       });
   });
-    test("POST: 400 - responds with a 400 status and a Bad Request comment when req.body is incomplete", () => {
+  test("POST: 400 - responds with a 400 status and a Bad Request comment when req.body is incomplete", () => {
     const newComment = { body: "first comment woop" };
     return request(app)
       .post("/api/reviews/1/comments")
@@ -271,7 +271,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.message).toBe("Bad Request");
       });
   });
-    test("POST: 404 - review_id doesn't exist", () => {
+  test("POST: 404 - review_id doesn't exist", () => {
     const newComment = {
       username: "dav3rid",
       body: "first comment woop",
@@ -401,6 +401,65 @@ describe("GET /api/users", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.message).toBe("route does not exist");
+      });
+  });
+});
+
+describe("GET /api/reviews/:review_id/comment count", () => {
+  test("GET: 200 - returns object of review with the correct ID and comment count of 0", () => {
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject({
+          review_id: 1,
+          title: expect.any(String),
+          designer: expect.any(String),
+          owner: expect.any(String),
+          review_img_url: expect.any(String),
+          review_body: expect.any(String),
+          category: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          comment_count: 0,
+        });
+      });
+  });
+  test("GET: 200 - returns object of review with the correct ID and comment count of 3", () => {
+    return request(app)
+      .get("/api/reviews/2")
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject({
+          review_id: 2,
+          title: expect.any(String),
+          designer: expect.any(String),
+          owner: expect.any(String),
+          review_img_url: expect.any(String),
+          review_body: expect.any(String),
+          category: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          comment_count: 3,
+        });
+      });
+  });
+  test("GET: 400 - return message bad request when a non appliable input is added to :review_id", () => {
+    return request(app)
+      .get("/api/reviews/nonsense")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
+      });
+  });
+  test("GET: 404 - return message review not found when a review_id input is not found", () => {
+    return request(app)
+      .get("/api/reviews/1000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("No review found for review_id: 1000");
       });
   });
 });
