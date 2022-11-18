@@ -472,6 +472,7 @@ describe("GET /api/reviews?queries", () => {
         .expect(200)
         .then(({ body }) => {
           const { reviews } = body;
+          console.log(reviews);
           expect(reviews).toHaveLength(1);
           reviews.forEach((review) => {
             expect(review).toEqual({
@@ -486,6 +487,23 @@ describe("GET /api/reviews?queries", () => {
               comment_count: expect.any(Number),
             });
           });
+        });
+    });
+    test("GET: 200- query responds with an empty array when category exists but there are no reviews", () => {
+      return request(app)
+        .get("/api/reviews?category=children's games")
+        .expect(200)
+        .then(({ body }) => {
+          const { reviews } = body;
+          expect(reviews).toHaveLength(0);
+        });
+    });
+    test("GET: 404 - query responds with a 404 error when category doesn't exist", () => {
+      return request(app)
+        .get("/api/reviews?category=dextity")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("Not Found");
         });
     });
   });
