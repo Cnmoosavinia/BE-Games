@@ -7,6 +7,8 @@ const {
   getReviewById,
   getComments,
   postComment,
+  //patchVotes,
+  getUsers,
 } = require("./controller/games.controller.js");
 
 app.use(express.json());
@@ -20,6 +22,8 @@ app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/reviews/:review_id/comments", getComments);
 
 app.post("/api/reviews/:review_id/comments", postComment);
+//app.patch
+app.get("/api/users", getUsers);
 
 app.all("*", (req, res, next) => {
   res.status(404).send({ message: "route does not exist" });
