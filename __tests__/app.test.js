@@ -225,7 +225,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.message).toBe("Bad Request");
       });
   });
-  test("POST: 400 - responds with a 400 status and a Bad Request comment when req.body is incomplete", () => {
+    test("POST: 400 - responds with a 400 status and a Bad Request comment when req.body is incomplete", () => {
     const newComment = { username: "dav3rid" };
     return request(app)
       .post("/api/reviews/1/comments")
@@ -235,7 +235,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.message).toBe("Bad Request");
       });
   });
-  test("POST: 400 - responds with a 400 status and a Bad Request comment when req.body is incomplete", () => {
+    test("POST: 400 - responds with a 400 status and a Bad Request comment when req.body is incomplete", () => {
     const newComment = { body: "first comment woop" };
     return request(app)
       .post("/api/reviews/1/comments")
@@ -271,7 +271,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(body.message).toBe("Bad Request");
       });
   });
-  test("POST: 404 - review_id doesn't exist", () => {
+    test("POST: 404 - review_id doesn't exist", () => {
     const newComment = {
       username: "dav3rid",
       body: "first comment woop",
@@ -298,86 +298,85 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
-//insert PATCH HERE
+
+describe("PATCH /api/reviews/review_id", () => {
+  test("PATCH: 200 - responds with the updated vote in reivew object when a postive is input", () => {
+    const votesUpdate = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(votesUpdate)
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject({
+          votes: 6,
+        });
+      });
+  });
+  test("PATCH: 200 - responds with the updated vote in reivew object when a negative is input", () => {
+    const votesUpdate = { inc_votes: -3 };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(votesUpdate)
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject({
+          votes: 2,
+        });
+      });
+  });
+  test("GET: 400 - return message bad request when input is empty", () => {
+    const votesUpdate = {};
+    return request(app)
+      .patch("/api/reviews/nonsense")
+      .send(votesUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
+      });
+  });
+  test("GET: 400 - return message bad request when a non appliable input is added to :review_id", () => {
+    const votesUpdate = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/reviews/nonsense")
+      .send(votesUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
+      });
+  });
+  test("GET: 404 - return message review not found when a review_id input is not found", () => {
+    const votesUpdate = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/reviews/1000")
+      .send(votesUpdate)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("No review found for review_id: 1000");
+      });
+  });
+  test("GET: 400 - return message Bad Request when inc_votes is not a number", () => {
+    const votesUpdate = { inc_votes: "hello" };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(votesUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
+      });
+  });
+  test("GET: 400 - return message Bad Request when inc_votes is spelt wrong", () => {
+    const votesUpdate = { inc_voes: 1 };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(votesUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad Request");
+      });
+  });
+});
 
 describe("GET /api/users", () => {
   test("GET: 200 - responds with a 200 status and an array of objects containing correct properties", () => {

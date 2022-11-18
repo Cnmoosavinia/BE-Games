@@ -86,36 +86,31 @@ exports.insertComment = ({ username, body }, { review_id }) => {
     });
 };
 
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
-//INSERT UPDATEVOTES
+exports.updateVotes = ({ inc_votes: newVote }, { review_id }) => {
+  return db
+    .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
+    .then(({ rows }) => {
+      const review = rows[0];
+      if (!review) {
+        return Promise.reject({
+          status: 404,
+          message: `No review found for review_id: ${review_id}`,
+        });
+      }
+      return review;
+    })
+    .then(() => {
+      return db
+        .query(
+          `UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;`,
+          [newVote, review_id]
+        )
+        .then(({ rows }) => {
+          const updatedReview = rows[0];
+          return updatedReview;
+        });
+    });
+};
 
 exports.selectUsers = () => {
   return db.query(`SELECT * FROM users;`).then((users) => {

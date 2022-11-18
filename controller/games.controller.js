@@ -5,7 +5,7 @@ const {
   selectComments,
   selectReviewById,
   insertComment,
-  //updateVotes,
+  updateVotes,
   selectUsers,
 } = require("../models/games-model.js");
 
@@ -47,16 +47,13 @@ exports.postComment = (req, res, next) => {
     .catch(next);
 };
 
-//patchVotes
-//patchVotes
-//patchVotes
-//patchVotes
-//patchVotes
-//patchVotes
-//patchVotes
-//patchVotes
-//patchVotes
-//patchVotes
+exports.patchVotes = (req, res, next) => {
+  updateVotes(req.body, req.params)
+    .then((review) => {
+      res.status(200).send({ review });
+    })
+    .catch(next);
+};
 
 exports.getUsers = (req, res, next) => {
   selectUsers().then((users) => {
