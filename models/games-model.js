@@ -86,7 +86,6 @@ exports.insertComment = ({ username, body }, { review_id }) => {
     });
 };
 
-
 exports.updateVotes = ({ inc_votes: newVote }, { review_id }) => {
   return db
     .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
@@ -111,4 +110,10 @@ exports.updateVotes = ({ inc_votes: newVote }, { review_id }) => {
           return updatedReview;
         });
     });
+};
+
+exports.selectUsers = () => {
+  return db.query(`SELECT * FROM users;`).then((users) => {
+    return users.rows;
+  });
 };

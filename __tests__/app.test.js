@@ -60,7 +60,7 @@ describe("GET /api/reviews", () => {
         });
       });
   });
-  test("GET: 200 - responds with a 200 status and an array of objects containing correct properties", () => {
+  test("GET: 200 - responds with a 200 status and an array of objects in the correct order", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
@@ -298,7 +298,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
-===================================================================================
+
 describe("PATCH /api/reviews/review_id", () => {
   test("PATCH: 200 - responds with the updated vote in reivew object when a postive is input", () => {
     const votesUpdate = { inc_votes: 1 };
@@ -374,6 +374,33 @@ describe("PATCH /api/reviews/review_id", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.message).toBe("Bad Request");
+      });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("GET: 200 - responds with a 200 status and an array of objects containing correct properties", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toEqual({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
+  test("GET: 404 - responds with a 404 error when .get is pathed incorrectly", () => {
+    return request(app)
+      .get("/api/user")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("route does not exist");
       });
   });
 });
