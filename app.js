@@ -53,6 +53,11 @@ app.use((err, req, res, next) => {
     res.status(404).send({ message: "Not Found" });
   } else next(err);
 });
+app.use((err, req, res, next) => {
+  if (err.code === "42703") {
+    res.status(404).send({ message: "Not Found" });
+  } else next(err);
+});
 
 app.use((err, req, res, next) => {
   console.log(err, "unhandled error");
