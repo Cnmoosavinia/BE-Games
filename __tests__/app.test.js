@@ -464,7 +464,7 @@ describe("GET /api/reviews/:review_id/comment count", () => {
   });
 });
 
-describe("GET /api/reviews?queries", () => {
+describe.only("GET /api/reviews?queries", () => {
   describe("category queries", () => {
     test("GET: 200 - query returns reviews by the input category", () => {
       return request(app)
