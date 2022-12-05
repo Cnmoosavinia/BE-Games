@@ -1,6 +1,7 @@
 const { text } = require("express");
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const {
   getCategories,
   getReviews,
@@ -10,6 +11,8 @@ const {
   patchVotes,
   getUsers,
 } = require("./controller/games.controller.js");
+
+app.use(cors());
 
 app.use(express.json());
 
