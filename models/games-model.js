@@ -88,7 +88,7 @@ exports.selectComments = (review_id) => {
     .then(() => {
       return db
         .query(
-          `SELECT * FROM comments WHERE review_id = $1 ORDER BY created_at asc`,
+          `SELECT * FROM comments WHERE review_id = $1 ORDER BY created_at DESC`,
           [review_id]
         )
         .then((comments) => {
