@@ -165,7 +165,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
   });
 });
 
-describe("POST /api/reviews/:review_id/comments", () => {
+describe.only("POST /api/reviews/:review_id/comments", () => {
   test("POST: 201 - responds with a 201 status with a newly added comment to the db", () => {
     const newComment = {
       username: "dav3rid",
@@ -464,7 +464,7 @@ describe("GET /api/reviews/:review_id/comment count", () => {
   });
 });
 
-describe.only("GET /api/reviews?queries", () => {
+describe("GET /api/reviews?queries", () => {
   describe("category queries", () => {
     test("GET: 200 - query returns reviews by the input category", () => {
       return request(app)
